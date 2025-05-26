@@ -3,6 +3,17 @@
 const char* ssid = "YourSSID";
 const char* password = "YourPassword";
 
+// Tracking state
+float currentAngle = 0;
+
+// Location for sunrise/sunset (Osaka example)
+const float latitude = 34.6937;
+const float longitude = 135.5023;
+
+// NTP Time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 9 * 3600, 60000);  // JST offset
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
