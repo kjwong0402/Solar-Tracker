@@ -3,6 +3,14 @@
 const char* ssid = "YourSSID";
 const char* password = "YourPassword";
 
+// Motor setup (ULN2003)
+const int stepsPerRevolution = 2048;
+const int motorPin1 = D1; // GPIO5
+const int motorPin2 = D2; // GPIO4
+const int motorPin3 = D5; // GPIO14
+const int motorPin4 = D6; // GPIO12
+Stepper myStepper(stepsPerRevolution, motorPin1, motorPin3, motorPin2, motorPin4);
+
 // Tracking state
 float currentAngle = 0;
 
