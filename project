@@ -45,3 +45,12 @@ void setup() {
 
 void loop() {
 }
+
+float utcToLocalHour(String timeStr) {
+  int hour = timeStr.substring(11, 13).toInt();
+  int min = timeStr.substring(14, 16).toInt();
+  float hourFloat = hour + min / 60.0;
+  float jstHour = hourFloat + 9.0;
+  if (jstHour >= 24) jstHour -= 24;
+  return jstHour;
+}
