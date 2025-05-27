@@ -45,6 +45,14 @@ void setup() {
 
 void loop() {
 
+  timeClient.update(); // This function synchronizes the current time from the NTP server and updates the internal time held by the NTPClient object. "Fetch the latest time from the internet"
+  float currentHour = timeClient.getHours() + (timeClient.getMinutes() / 60.0); // returns the current hour + minutes converted into decimal. 
+  Serial.printf("Current time: %.2f\n", currentHour);
+
+  if (millis() - lastAPICheck > apiInterval) {
+    fetchSunriseSunset();
+  }
+
     // Only track sun during daylight
   if (currentHour >= sunriseTime && currentHour <= sunsetTime) {
     float angle = mapFloat(currentHour, sunriseTime, sunsetTime, 0, 180);
