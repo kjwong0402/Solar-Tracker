@@ -44,6 +44,14 @@ void setup() {
 }
 
 void loop() {
+
+    // Only track sun during daylight
+  if (currentHour >= sunriseTime && currentHour <= sunsetTime) {
+    float angle = mapFloat(currentHour, sunriseTime, sunsetTime, 0, 180);
+    moveToAngle(angle);
+  }
+
+  delay(60000); // update every minute
 }
 
 float utcToLocalHour(String timeStr) {
@@ -53,4 +61,8 @@ float utcToLocalHour(String timeStr) {
   float jstHour = hourFloat + 9.0;
   if (jstHour >= 24) jstHour -= 24;
   return jstHour;
+}
+
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
