@@ -62,6 +62,41 @@ void loop() {
   delay(60000); // update every minute
 }
 
+
+void fetchSunriseSunset() {
+  if (WiFi.status() == WL_CONNECTED) { // Before doing anything, it checks if the ESP8266 is still connected to Wi-Fi. If not connected, it skips the rest of the function.
+    HTTPClient http; //the HTTP request (used to communicate with the API).
+    WiFiClient client; // the WiFi connection used in that HTTP request. These are standard ESP8266 classes.
+    String url = String("http://api.sunrise-sunset.org/json?lat=") + latitude + "&lng=" + longitude + "&formatted=0"; // outputs this as a string http://api.sunrise-sunset.org/json?lat=35.6895&lng=139.6917&formatted=0
+    http.begin(client, url); //This tells the http object to start the request using the client and the built URL.
+
+    int httpCode = http.GET(); //Sends an HTTP GET request to the API and stores the response code (like 200 for success).
+    if (httpCode == HTTP_CODE_OK) { //Checks if the server returned 200 OK, which means the request was successful. defined in the <ESP8266HTTPClient.h> lib
+      String payload = http.getString(); //Reads the response body from the server as a plain text string (JSON format).
+      Serial.println("API Response:");
+      Serial.println(payload); // prints the payload
+
+      DynamicJsonDocument doc(1024); // Creates a document (with 1024 bytes of memory) to store parsed JSON data using the ArduinoJson library.
+      DeserializationError error = deserializeJson(doc, payload);
+      if (!error) { //Only proceeds if the JSON was successfully parsed.
+        String sunrise = doc["results"]["sunrise"].as<String>();
+        String sunset = doc["results"]["sunset"].as<String>();
+
+        sunriseTime = utcToLocalHour(sunrise);
+        sunsetTime = utcToLocalHour(sunset);
+
+        Serial.printf("Sunrise: %.2f\n", sunriseTime);
+        Serial.printf("Sunset: %.2f\n", sunsetTime);
+
+        lastAPICheck = millis();
+      }
+    } else {
+      Serial.println("Failed to fetch sunrise/sunset data.");
+    }
+    http.end();
+  }
+}
+
 float utcToLocalHour(String timeStr) {
   int hour = timeStr.substring(11, 13).toInt();
   int min = timeStr.substring(14, 16).toInt();
