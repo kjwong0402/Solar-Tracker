@@ -109,3 +109,14 @@ float utcToLocalHour(String timeStr) {
 float mapFloat(float x, float in_min, float in_max, float out_min, float out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+void moveToAngle(float targetAngle) { // targetAngle is the angle computed from mapFloat
+  if (abs(targetAngle - currentAngle) < 1) { // currentAngle is 0 initially 
+    Serial.println("Motor already at target.");
+    return;
+  }
+  int steps = (int)((targetAngle - currentAngle) * stepsPerRevolution / 360.0); // computes the angle needed for the motor to move
+  myStepper.step(steps); // angle converted into steps for the motor to move
+  currentAngle = targetAngle;
+  Serial.printf("Moved to %.1f degrees\n", currentAngle);
+}
