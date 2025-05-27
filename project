@@ -28,6 +28,14 @@ const float longitude = 135.5023;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 9 * 3600, 60000);  // JST offset
 
+// Timers
+unsigned long lastAPICheck = 0;
+const unsigned long apiInterval = 24UL * 60UL * 60UL * 1000UL; // 24 hours in milliseconds
+
+// Sunrise/Sunset times (in hours)
+float sunriseTime = 6.0;
+float sunsetTime = 18.0;
+
 void setup() {
   Serial.begin(115200);
   myStepper.setSpeed(10); // RPM, myStepper.setSpeed -> Arduino build in function
